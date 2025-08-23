@@ -92,6 +92,51 @@ public class MicrophonePlugin extends Plugin {
     }
 
     @PluginMethod
+    public void pauseRecording(PluginCall call) {
+        if (implementation == null) {
+            call.reject(StatusMessageTypes.NoRecordingInProgress.getValue());
+            return;
+        }
+
+        try {
+            implementation.pauseRecording();
+            JSObject success = new JSObject();
+            success.put("status", StatusMessageTypes.RecordingPaused.getValue());
+            call.resolve(success);
+        } catch (Exception exp) {
+            call.reject(StatusMessageTypes.RecordingFailed.getValue());
+        }
+    }
+
+    @PluginMethod
+    public void resumeRecording(PluginCall call) {
+        if (implementation == null) {
+            call.reject(StatusMessageTypes.NoRecordingInProgress.getValue());
+            return;
+        }
+
+        try {
+            implementation.resumeRecording();
+            JSObject success = new JSObject();
+            success.put("status", StatusMessageTypes.RecordingResumed.getValue());
+            call.resolve(success);
+        } catch (Exception exp) {
+            call.reject(StatusMessageTypes.RecordingFailed.getValue());
+        }
+    }
+
+    @PluginMethod
+    public void getCurrentStatus(PluginCall call) {
+        JSObject result = new JSObject();
+        if (implementation == null) {
+            result.put("status", StatusMessageTypes.NoRecordingInProgress.getValue());
+        } else {
+            result.put("status", implementation.getCurrentStatus());
+        }
+        call.resolve(result);
+    }
+
+    @PluginMethod
     public void stopRecording(PluginCall call) {
         if (implementation == null) {
             call.reject(StatusMessageTypes.NoRecordingInProgress.getValue());

@@ -2,6 +2,7 @@ package com.mozartec.capacitor.microphone;
 
 import android.content.Context;
 import android.media.MediaRecorder;
+import android.os.Build;
 import java.io.File;
 import java.io.IOException;
 
@@ -10,6 +11,7 @@ public class Microphone {
     private Context context;
     private MediaRecorder mediaRecorder;
     private File outputFile;
+    private StatusMessageTypes currentStatus = StatusMessageTypes.NoRecordingInProgress;
 
     public Microphone(Context context) throws IOException {
         this.context = context;
@@ -28,14 +30,34 @@ public class Microphone {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mediaRecorder.prepare();
         mediaRecorder.start();
+        currentStatus = StatusMessageTypes.RecordingInProgress;
+    }
+
+    public void pauseRecording() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mediaRecorder.pause();
+            currentStatus = StatusMessageTypes.RecordingPaused;
+        }
+    }
+
+    public void resumeRecording() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mediaRecorder.resume();
+            currentStatus = StatusMessageTypes.RecordingInProgress;
+        }
     }
 
     public void stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.release();
+        currentStatus = StatusMessageTypes.NoRecordingInProgress;
     }
 
     public File getOutputFile() {
         return outputFile;
+    }
+
+    public String getCurrentStatus() {
+        return currentStatus.getValue();
     }
 }

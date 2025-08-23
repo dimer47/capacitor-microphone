@@ -60,6 +60,9 @@ Read about [Setting Permissions](https://capacitorjs.com/docs/android/configurat
 * [`checkPermissions()`](#checkpermissions)
 * [`requestPermissions()`](#requestpermissions)
 * [`startRecording()`](#startrecording)
+* [`pauseRecording()`](#pauserecording)
+* [`resumeRecording()`](#resumerecording)
+* [`getCurrentStatus()`](#getcurrentstatus)
 * [`stopRecording()`](#stoprecording)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -106,6 +109,51 @@ startRecording() => Promise<{ status: string; }>
 ```
 
 Starts recoding session if no session is in progress
+
+**Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
+
+**Since:** 0.0.3
+
+--------------------
+
+
+### pauseRecording()
+
+```typescript
+pauseRecording() => Promise<{ status: string; }>
+```
+
+Pauses recoding session if one is in progress
+
+**Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
+
+**Since:** 0.0.3
+
+--------------------
+
+
+### resumeRecording()
+
+```typescript
+resumeRecording() => Promise<{ status: string; }>
+```
+
+Resumes recoding session if one is paused
+
+**Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
+
+**Since:** 0.0.3
+
+--------------------
+
+
+### getCurrentStatus()
+
+```typescript
+getCurrentStatus() => Promise<{ status: string; }>
+```
+
+Gets current recording status
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 

@@ -7,7 +7,7 @@ import AVFoundation
  */
 @objc(MicrophonePlugin)
 public class MicrophonePlugin: CAPPlugin {
-    private var implementation: Microphone? = nil
+    private var implementation: Microphone?
 
     @objc override public func checkPermissions(_ call: CAPPluginCall) {
         var result: [String: Any] = [:]
@@ -21,7 +21,7 @@ public class MicrophonePlugin: CAPPlugin {
         }
         call.resolve(result)
     }
-    
+
     @objc override public func requestPermissions(_ call: CAPPluginCall) {
         // TODO: (CHECK) We are not even sending permission list (Do we need it ?)
         // get the list of desired types, if passed
@@ -45,24 +45,24 @@ public class MicrophonePlugin: CAPPlugin {
             self?.checkPermissions(call)
         }
     }
-    
+
     @objc func startRecording(_ call: CAPPluginCall) {
-        if(!isAudioRecordingPermissionGranted()) {
+        if !isAudioRecordingPermissionGranted() {
             call.reject(StatusMessageTypes.microphonePermissionNotGranted.rawValue)
             return
         }
-        
-        if(implementation != nil) {
+
+        if implementation != nil {
             call.reject(StatusMessageTypes.recordingInProgress.rawValue)
             return
         }
-        
+
         implementation = Microphone()
-        if(implementation == nil) {
+        if implementation == nil {
             call.reject(StatusMessageTypes.cannotRecordOnThisPhone.rawValue)
             return
         }
-        
+
         let successfullyStartedRecording = implementation!.startRecording()
         if successfullyStartedRecording == false {
             call.reject(StatusMessageTypes.cannotRecordOnThisPhone.rawValue)
@@ -70,22 +70,50 @@ public class MicrophonePlugin: CAPPlugin {
             call.resolve(["status": StatusMessageTypes.recordingStared.rawValue])
         }
     }
-    
-    @objc func stopRecording(_ call: CAPPluginCall) {
-        if(implementation == nil) {
+
+    @objc func pauseRecording(_ call: CAPPluginCall) {
+        if implementation == nil {
             call.reject(StatusMessageTypes.noRecordingInProgress.rawValue)
             return
         }
-        
+
+        implementation?.pauseRecording()
+        call.resolve(["status": StatusMessageTypes.recordingPaused.rawValue])
+    }
+
+    @objc func resumeRecording(_ call: CAPPluginCall) {
+        if implementation == nil {
+            call.reject(StatusMessageTypes.noRecordingInProgress.rawValue)
+            return
+        }
+
+        implementation?.resumeRecording()
+        call.resolve(["status": StatusMessageTypes.recordingResumed.rawValue])
+    }
+
+    @objc func getCurrentStatus(_ call: CAPPluginCall) {
+        if let impl = implementation {
+            call.resolve(["status": impl.getCurrentStatus()])
+        } else {
+            call.resolve(["status": StatusMessageTypes.noRecordingInProgress.rawValue])
+        }
+    }
+
+    @objc func stopRecording(_ call: CAPPluginCall) {
+        if implementation == nil {
+            call.reject(StatusMessageTypes.noRecordingInProgress.rawValue)
+            return
+        }
+
         implementation?.stopRecording()
-        
+
         let audioFileUrl = implementation?.getOutputFile()
-        if(audioFileUrl == nil) {
+        if audioFileUrl == nil {
             implementation = nil
             call.reject(StatusMessageTypes.failedToFetchRecording.rawValue)
             return
         }
-        
+
         let webURL = bridge?.portablePath(fromLocalURL: audioFileUrl)
 
         let audioRecording = AudioRecording(
@@ -102,11 +130,11 @@ public class MicrophonePlugin: CAPPlugin {
             call.resolve(audioRecording.toDictionary())
         }
     }
-    
+
     private func isAudioRecordingPermissionGranted() -> Bool {
         return AVAudioSession.sharedInstance().recordPermission == AVAudioSession.RecordPermission.granted
     }
-    
+
     private func getAudioFileDuration(_ filePath: URL?) -> Int {
         if filePath == nil {
             return -1
