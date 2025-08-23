@@ -12,28 +12,28 @@ struct AudioRecording {
     let duration: Int
     let format: String?
     let mimeType: String?
-    
-    func toDictionary() -> Dictionary<String, Any> {
+
+    func toDictionary() -> [String: Any] {
         var result: [String: Any] = [:]
-        
+
         if path != nil {
             result["path"] = path
         }
-        
+
         if webPath != nil {
             result["webPath"] = webPath
         }
-        
+
         result["duration"] = duration
-        
+
         if format != nil {
             result["format"] = format
         }
-        
+
         if mimeType != nil {
             result["mimeType"] = mimeType
         }
-        
+
         return result
     }
 }

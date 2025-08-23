@@ -5,19 +5,19 @@ import AVFAudio
     private var audioRecorder: AVAudioRecorder!
     private var audioFilePath: URL!
     private var currentStatus: StatusMessageTypes = .noRecordingInProgress
-    
+
     private let settings = [
         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
         AVSampleRateKey: 44100,
         AVNumberOfChannelsKey: 1,
         AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
     ]
-    
+
     private func getDirectoryToSaveAudioFile() -> URL {
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
-    
-     func startRecording() -> Bool {
+
+    func startRecording() -> Bool {
         do {
             recordingSession = AVAudioSession.sharedInstance()
             try recordingSession.setCategory(AVAudioSession.Category.record)
@@ -32,17 +32,17 @@ import AVFAudio
         }
     }
 
-     func pauseRecording() {
+    func pauseRecording() {
         audioRecorder.pause()
         currentStatus = .recordingPaused
     }
 
-     func resumeRecording() {
+    func resumeRecording() {
         audioRecorder.record()
         currentStatus = .recordingInProgress
     }
 
-     func stopRecording() {
+    func stopRecording() {
         do {
             audioRecorder.stop()
             try recordingSession.setActive(false)
@@ -51,7 +51,7 @@ import AVFAudio
             currentStatus = .noRecordingInProgress
         } catch {}
     }
-    
+
     func getOutputFile() -> URL {
         return audioFilePath
     }

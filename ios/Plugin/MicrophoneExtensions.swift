@@ -12,7 +12,7 @@ internal protocol MicrophoneAuthorizationState {
     var authorizationState: String { get }
 }
 
-extension AVAuthorizationStatus : MicrophoneAuthorizationState {
+extension AVAuthorizationStatus: MicrophoneAuthorizationState {
     var authorizationState: String {
         switch self {
         case .denied, .restricted:
