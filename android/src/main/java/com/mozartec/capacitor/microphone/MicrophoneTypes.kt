@@ -13,17 +13,9 @@ enum class StatusMessageTypes(val value: String) {
     RecordingStared("recording stared")
 }
 
-class Recording(val base64String: String?, val dataUrl: String?, val path: String?, val webPath: String?, val duration: Int, val format: String?, val mimeType: String?) {
+class Recording(val path: String?, val webPath: String?, val duration: Int, val format: String?, val mimeType: String?) {
     fun toJSObject(): JSObject {
         var result = JSObject()
-
-        if (base64String != null) {
-            result.put("base64String", base64String)
-        }
-
-        if (dataUrl != null) {
-            result.put("dataUrl", dataUrl)
-        }
 
         if (path != null) {
             result.put("path", path)

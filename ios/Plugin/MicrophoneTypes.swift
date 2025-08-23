@@ -7,8 +7,6 @@
 //
 
 struct AudioRecording {
-    let base64String: String?
-    let dataUrl: String?
     let path: String?
     let webPath: String?
     let duration: Int
@@ -17,14 +15,6 @@ struct AudioRecording {
     
     func toDictionary() -> Dictionary<String, Any> {
         var result: [String: Any] = [:]
-        
-        if base64String != nil {
-            result["base64String"] = base64String
-        }
-        
-        if dataUrl != nil {
-            result["dataUrl"] = dataUrl
-        }
         
         if path != nil {
             result["path"] = path
