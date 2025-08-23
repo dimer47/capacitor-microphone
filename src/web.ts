@@ -67,6 +67,43 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
     }
   }
 
+  async pauseRecording(): Promise<{ status: string }> {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== 'recording') {
+      throw StatusMessageTypes.NoRecordingInProgress;
+    }
+    try {
+      this.mediaRecorder.pause();
+      return { status: StatusMessageTypes.RecordingPaused };
+    } catch {
+      throw StatusMessageTypes.RecordingFailed;
+    }
+  }
+
+  async resumeRecording(): Promise<{ status: string }> {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== 'paused') {
+      throw StatusMessageTypes.NoRecordingInProgress;
+    }
+    try {
+      this.mediaRecorder.resume();
+      return { status: StatusMessageTypes.RecordingResumed };
+    } catch {
+      throw StatusMessageTypes.RecordingFailed;
+    }
+  }
+
+  async getCurrentStatus(): Promise<{ status: string }> {
+    if (!this.mediaRecorder) {
+      return { status: StatusMessageTypes.NoRecordingInProgress };
+    }
+    const status =
+      this.mediaRecorder.state === 'paused'
+        ? StatusMessageTypes.RecordingPaused
+        : this.mediaRecorder.state === 'recording'
+          ? StatusMessageTypes.RecordingInProgress
+          : StatusMessageTypes.NoRecordingInProgress;
+    return { status };
+  }
+
   async stopRecording(): Promise<AudioRecording> {
     return new Promise((resolve, reject) => {
       if (!this.mediaRecorder) {

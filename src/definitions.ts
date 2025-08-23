@@ -23,6 +23,27 @@ export interface MicrophonePlugin {
   startRecording(): Promise<{ status: string }>;
 
   /**
+   * Pauses recoding session if one is in progress
+   * @returns {Promise<{ status: string }>} Object with status message
+   * @since 0.0.3
+   */
+  pauseRecording(): Promise<{ status: string }>;
+
+  /**
+   * Resumes recoding session if one is paused
+   * @returns {Promise<{ status: string }>} Object with status message
+   * @since 0.0.3
+   */
+  resumeRecording(): Promise<{ status: string }>;
+
+  /**
+   * Gets current recording status
+   * @returns {Promise<{ status: string }>} Object with status message
+   * @since 0.0.3
+   */
+  getCurrentStatus(): Promise<{ status: string }>;
+
+  /**
    * Stops recoding session if one is in progress
    * @returns {Promise<AudioRecording>} AudioRecording including file path
    * @since 0.0.3

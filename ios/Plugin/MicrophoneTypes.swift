@@ -45,6 +45,8 @@ enum StatusMessageTypes: String {
     case noRecordingInProgress = "no recording in progress"
     case failedToFetchRecording = "failed to fetch recording"
     case recordingInProgress = "recording in progress"
+    case recordingPaused = "recording paused"
+    case recordingResumed = "recording resumed"
     case microphoneIsBusy = "microphone is busy"
     case recordingStared = "recording stared"
 }

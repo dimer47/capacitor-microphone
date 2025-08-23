@@ -70,6 +70,34 @@ public class MicrophonePlugin: CAPPlugin {
             call.resolve(["status": StatusMessageTypes.recordingStared.rawValue])
         }
     }
+
+    @objc func pauseRecording(_ call: CAPPluginCall) {
+        if(implementation == nil) {
+            call.reject(StatusMessageTypes.noRecordingInProgress.rawValue)
+            return
+        }
+
+        implementation?.pauseRecording()
+        call.resolve(["status": StatusMessageTypes.recordingPaused.rawValue])
+    }
+
+    @objc func resumeRecording(_ call: CAPPluginCall) {
+        if(implementation == nil) {
+            call.reject(StatusMessageTypes.noRecordingInProgress.rawValue)
+            return
+        }
+
+        implementation?.resumeRecording()
+        call.resolve(["status": StatusMessageTypes.recordingResumed.rawValue])
+    }
+
+    @objc func getCurrentStatus(_ call: CAPPluginCall) {
+        if let impl = implementation {
+            call.resolve(["status": impl.getCurrentStatus()])
+        } else {
+            call.resolve(["status": StatusMessageTypes.noRecordingInProgress.rawValue])
+        }
+    }
     
     @objc func stopRecording(_ call: CAPPluginCall) {
         if(implementation == nil) {

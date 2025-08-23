@@ -9,6 +9,8 @@ enum class StatusMessageTypes(val value: String) {
     NoRecordingInProgress("no recording in progress"),
     FailedToFetchRecording("failed to fetch recording"),
     RecordingInProgress("recording in progress"),
+    RecordingPaused("recording paused"),
+    RecordingResumed("recording resumed"),
     MicrophoneIsBusy("microphone is busy"),
     RecordingStared("recording stared")
 }
