@@ -24,7 +24,7 @@ export interface MicrophonePlugin {
 
   /**
    * Stops recoding session if one is in progress
-   * @returns {Promise<AudioRecording>} AudioRecording
+   * @returns {Promise<AudioRecording>} AudioRecording including file path
    * @since 0.0.3
    */
   stopRecording(): Promise<AudioRecording>;
@@ -32,28 +32,14 @@ export interface MicrophonePlugin {
 
 export interface AudioRecording {
   /**
-   * The base64 encoded string representation of the audio file.
-   *
-   * @since 0.0.3
-   */
-  base64String?: string;
-
-  /**
-   * The url starting with 'data:audio/aac;base64,' and the base64 encoded string representation of the audio file.
-   *
-   * @since 0.0.3
-   */
-  dataUrl?: string;
-
-  /**
-   * platform-specific file URL that can be read later using the Filesystem API.
+   * Platform-specific file URL that can be read later using the Filesystem API.
    *
    * @since 0.0.3
    */
   path?: string;
 
   /**
-   * webPath returns a path that can be used to set the src attribute of an audio element can be useful for testing.
+   * webPath returns a path that can be used to set the src attribute of an audio element and can be useful for testing.
    *
    * @since 0.0.3
    */
@@ -92,7 +78,7 @@ export enum MicrophonePermissionStateValue {
   promptWithRationale = 'prompt-with-rationale',
   granted = 'granted',
   denied = 'denied',
-  limited = 'limited'
+  limited = 'limited',
 }
 
 export type MicrophonePermissionType = 'microphone';
