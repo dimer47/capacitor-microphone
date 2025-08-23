@@ -141,15 +141,13 @@ Stops recoding session if one is in progress
 
 #### AudioRecording
 
-| Prop               | Type                | Description                                                                                                                                  | Since |
-| ------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| **`base64String`** | <code>string</code> | The base64 encoded string representation of the audio file.                                                                                  | 0.0.3 |
-| **`dataUrl`**      | <code>string</code> | The url starting with 'data:audio/aac;base64,' and the base64 encoded string representation of the audio file.                               | 0.0.3 |
-| **`path`**         | <code>string</code> | platform-specific file URL that can be read later using the Filesystem API.                                                                  | 0.0.3 |
-| **`webPath`**      | <code>string</code> | webPath returns a path that can be used to set the src attribute of an audio element can be useful for testing.                              | 0.0.3 |
-| **`duration`**     | <code>number</code> | recoding duration in milliseconds                                                                                                            | 0.0.3 |
-| **`format`**       | <code>string</code> | file extension: ".m4a" for (iOS and Android) and ".webm" \| ".mp4" \| ".ogg" \| ".wav" for Web based on compatibility                        | 0.0.3 |
-| **`mimeType`**     | <code>string</code> | file encoding: "audio/aac" for (iOS and Android) and "audio/webm \| "audio/mp4" \| "audio/ogg" \| "audio/wav" for Web based on compatibility | 0.0.3 |
+| Prop           | Type                | Description                                                                                                                                  | Since |
+| -------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`path`**     | <code>string</code> | Platform-specific file URL that can be read later using the Filesystem API.                                                                  | 0.0.3 |
+| **`webPath`**  | <code>string</code> | webPath returns a path that can be used to set the src attribute of an audio element and can be useful for testing.                          | 0.0.3 |
+| **`duration`** | <code>number</code> | recoding duration in milliseconds                                                                                                            | 0.0.3 |
+| **`format`**   | <code>string</code> | file extension: ".m4a" for (iOS and Android) and ".webm" \| ".mp4" \| ".ogg" \| ".wav" for Web based on compatibility                        | 0.0.3 |
+| **`mimeType`** | <code>string</code> | file encoding: "audio/aac" for (iOS and Android) and "audio/webm \| "audio/mp4" \| "audio/ogg" \| "audio/wav" for Web based on compatibility | 0.0.3 |
 
 
 ### Type Aliases

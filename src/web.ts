@@ -92,46 +92,32 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
             console.error('Could not determine audio duration', e);
           }
 
-          const reader = new FileReader();
-          reader.onerror = () => {
+          if (duration < 0) {
             this.mediaRecorder = null;
             reject(StatusMessageTypes.FailedToFetchRecording);
+            return;
+          }
+
+          // Determine file extension based on MIME type
+          const format = mimeType.includes('webm')
+            ? '.webm'
+            : mimeType.includes('mp4')
+              ? '.mp4'
+              : mimeType.includes('ogg')
+                ? '.ogg'
+                : mimeType.includes('wav')
+                  ? '.wav'
+                  : '.webm';
+
+          const recording: AudioRecording = {
+            webPath: audioUrl,
+            duration,
+            format,
+            mimeType,
           };
 
-          reader.onloadend = () => {
-            const base64String = reader.result?.toString().split(',')[1];
-
-            if (!base64String || duration < 0) {
-              this.mediaRecorder = null;
-              reject(StatusMessageTypes.FailedToFetchRecording);
-              return;
-            }
-
-            // Determine file extension based on MIME type
-            const format = mimeType.includes('webm')
-              ? '.webm'
-              : mimeType.includes('mp4')
-                ? '.mp4'
-                : mimeType.includes('ogg')
-                  ? '.ogg'
-                  : mimeType.includes('wav')
-                    ? '.wav'
-                    : '.webm';
-
-            const recording: AudioRecording = {
-              base64String,
-              dataUrl: `data:${mimeType};base64,${base64String}`,
-              webPath: audioUrl,
-              duration,
-              format,
-              mimeType,
-            };
-
-            this.mediaRecorder = null;
-            resolve(recording);
-          };
-
-          reader.readAsDataURL(audioBlob);
+          this.mediaRecorder = null;
+          resolve(recording);
         } catch (error) {
           this.mediaRecorder = null;
           reject(StatusMessageTypes.FailedToFetchRecording);

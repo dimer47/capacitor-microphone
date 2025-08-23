@@ -3,9 +3,7 @@ package com.mozartec.capacitor.microphone;
 import android.Manifest;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.util.Base64;
 import android.util.Log;
-
 import com.getcapacitor.FileUtils;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -16,22 +14,13 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.PermissionCallback;
-
+import java.io.File;
+import java.util.List;
 import org.json.JSONException;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 @CapacitorPlugin(
-        name = "Microphone",
-        permissions = {
-                @Permission(strings = {Manifest.permission.RECORD_AUDIO}, alias = MicrophonePlugin.MICROPHONE),
-        }
+    name = "Microphone",
+    permissions = { @Permission(strings = { Manifest.permission.RECORD_AUDIO }, alias = MicrophonePlugin.MICROPHONE) }
 )
 public class MicrophonePlugin extends Plugin {
 
@@ -60,8 +49,7 @@ public class MicrophonePlugin extends Plugin {
             List<String> permsList = null;
             try {
                 permsList = providedPerms.toList();
-            } catch (JSONException e) {
-            }
+            } catch (JSONException e) {}
 
             // TODO: (CHECK) This may not even be needed as till now we only need mic permission
             if (permsList != null && permsList.size() == 1 && permsList.contains(MICROPHONE)) {
@@ -116,23 +104,12 @@ public class MicrophonePlugin extends Plugin {
             Uri newUri = Uri.fromFile(audioFileUrl);
             String webURL = FileUtils.getPortablePath(getContext(), bridge.getLocalUrl(), newUri);
             Log.e("webURL", webURL);
-            String base64String = readFileAsBase64(audioFileUrl);
             int duration = getAudioFileDuration(audioFileUrl.getAbsolutePath());
             Log.e("duration", duration + "");
             Log.e("newUri", newUri.toString());
-            Recording recording = new Recording(
-                    base64String,
-                    "data:audio/aac;base64," + base64String,
-                    newUri.toString(),
-                    webURL,
-                    duration,
-                    ".m4a",
-                    "audio/aac"
-            );
-            if (base64String == null || duration < 0)
-                call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
-            else
-                call.resolve(recording.toJSObject());
+            Recording recording = new Recording(newUri.toString(), webURL, duration, ".m4a", "audio/aac");
+            if (duration < 0) call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
+            else call.resolve(recording.toJSObject());
         } catch (Exception exp) {
             call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
         } finally {
@@ -142,19 +119,6 @@ public class MicrophonePlugin extends Plugin {
 
     private boolean isAudioRecordingPermissionGranted() {
         return getPermissionState(MICROPHONE) == PermissionState.GRANTED;
-    }
-
-    private String readFileAsBase64(File file) {
-        BufferedInputStream bns;
-        byte[] bArray = new byte[(int) file.length()];
-        try {
-            bns = new BufferedInputStream(new FileInputStream(file));
-            bns.read(bArray);
-            bns.close();
-        } catch (IOException exp) {
-            return null;
-        }
-        return Base64.encodeToString(bArray, Base64.DEFAULT);
     }
 
     private int getAudioFileDuration(String filePath) {

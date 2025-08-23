@@ -87,11 +87,8 @@ public class MicrophonePlugin: CAPPlugin {
         }
         
         let webURL = bridge?.portablePath(fromLocalURL: audioFileUrl)
-        let base64String = readFileAsBase64(audioFileUrl)
-        
+
         let audioRecording = AudioRecording(
-            base64String: base64String,
-            dataUrl: (base64String != nil) ? ("data:audio/aac;base64," + base64String!) : nil,
             path: audioFileUrl?.absoluteString,
             webPath: webURL?.path,
             duration: getAudioFileDuration(audioFileUrl),
@@ -99,7 +96,7 @@ public class MicrophonePlugin: CAPPlugin {
             mimeType: "audio/aac"
         )
         implementation = nil
-        if audioRecording.base64String == nil || audioRecording.duration < 0 {
+        if audioRecording.duration < 0 {
             call.reject(StatusMessageTypes.failedToFetchRecording.rawValue)
         } else {
             call.resolve(audioRecording.toDictionary())
@@ -108,20 +105,6 @@ public class MicrophonePlugin: CAPPlugin {
     
     private func isAudioRecordingPermissionGranted() -> Bool {
         return AVAudioSession.sharedInstance().recordPermission == AVAudioSession.RecordPermission.granted
-    }
-    
-    private func readFileAsBase64(_ filePath: URL?) -> String? {
-        if(filePath == nil) {
-            return nil
-        }
-        
-        do {
-            let fileData = try Data.init(contentsOf: filePath!)
-            let fileStream = fileData.base64EncodedString()
-            return fileStream
-        } catch {}
-        
-        return nil
     }
     
     private func getAudioFileDuration(_ filePath: URL?) -> Int {
