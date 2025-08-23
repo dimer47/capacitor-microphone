@@ -1,4 +1,4 @@
-import type { PermissionState } from '@capacitor/core';
+import type { PermissionState, PluginListenerHandle } from '@capacitor/core';
 
 export interface MicrophonePlugin {
   /**
@@ -40,8 +40,37 @@ export interface MicrophonePlugin {
    * Gets current recording status
    * @returns {Promise<{ status: string }>} Object with status message
    * @since 0.0.3
-   */
+  */
   getCurrentStatus(): Promise<{ status: string }>;
+
+  /**
+   * Adds a listener to microphone status updates
+   * @param eventName status
+   * @param listenerFunc function to be executed on event
+   * @returns {Promise<PluginListenerHandle>} PluginListenerHandle
+   * @since 0.0.4
+   */
+  addListener(
+    eventName: 'status',
+    listenerFunc: (status: { status: string }) => void,
+  ): Promise<PluginListenerHandle>;
+
+  /**
+   * Removes a specific listener from microphone status updates
+   * @param eventName status
+   * @param listenerFunc function to be removed
+   * @since 0.0.4
+   */
+  removeStatusListener(
+    eventName: 'status',
+    listenerFunc: (status: { status: string }) => void,
+  ): Promise<void>;
+
+  /**
+   * Removes all listeners from microphone status updates
+   * @since 0.0.4
+   */
+  removeAllListeners(): Promise<void>;
 
   /**
    * Stops recoding session if one is in progress

@@ -7,6 +7,17 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
   private mediaRecorder: MediaRecorder | null = null;
   private audioChunks: Blob[] = [];
 
+  private emitStatus(status: string) {
+    this.notifyListeners('status', { status });
+  }
+
+  async removeStatusListener(
+    eventName: 'status',
+    listenerFunc: (status: { status: string }) => void,
+  ): Promise<void> {
+    await (this as any).removeListener(eventName, listenerFunc);
+  }
+
   async checkPermissions(): Promise<PermissionStatus> {
     const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
     return { microphone: permissionStatus.state as 'granted' | 'denied' | 'prompt' };
@@ -59,8 +70,10 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
       };
 
       this.mediaRecorder.start();
+      const status = StatusMessageTypes.RecordingStared;
+      this.emitStatus(status);
       return {
-        status: StatusMessageTypes.RecordingStared,
+        status,
       };
     } catch (error) {
       throw StatusMessageTypes.RecordingFailed;
@@ -73,7 +86,9 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
     }
     try {
       this.mediaRecorder.pause();
-      return { status: StatusMessageTypes.RecordingPaused };
+      const status = StatusMessageTypes.RecordingPaused;
+      this.emitStatus(status);
+      return { status };
     } catch {
       throw StatusMessageTypes.RecordingFailed;
     }
@@ -85,7 +100,9 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
     }
     try {
       this.mediaRecorder.resume();
-      return { status: StatusMessageTypes.RecordingResumed };
+      const status = StatusMessageTypes.RecordingResumed;
+      this.emitStatus(status);
+      return { status };
     } catch {
       throw StatusMessageTypes.RecordingFailed;
     }
@@ -93,7 +110,9 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
 
   async getCurrentStatus(): Promise<{ status: string }> {
     if (!this.mediaRecorder) {
-      return { status: StatusMessageTypes.NoRecordingInProgress };
+      const status = StatusMessageTypes.NoRecordingInProgress;
+      this.emitStatus(status);
+      return { status };
     }
     const status =
       this.mediaRecorder.state === 'paused'
@@ -101,6 +120,7 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
         : this.mediaRecorder.state === 'recording'
           ? StatusMessageTypes.RecordingInProgress
           : StatusMessageTypes.NoRecordingInProgress;
+    this.emitStatus(status);
     return { status };
   }
 
@@ -154,6 +174,7 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
           };
 
           this.mediaRecorder = null;
+          this.emitStatus(StatusMessageTypes.NoRecordingInProgress);
           resolve(recording);
         } catch (error) {
           this.mediaRecorder = null;
