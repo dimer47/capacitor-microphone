@@ -107,7 +107,7 @@ public class MicrophonePlugin extends Plugin {
             int duration = getAudioFileDuration(audioFileUrl.getAbsolutePath());
             Log.e("duration", duration + "");
             Log.e("newUri", newUri.toString());
-            Recording recording = new Recording(null, null, newUri.toString(), webURL, duration, ".m4a", "audio/aac");
+            Recording recording = new Recording(newUri.toString(), webURL, duration, ".m4a", "audio/aac");
             if (duration < 0) call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
             else call.resolve(recording.toJSObject());
         } catch (Exception exp) {
