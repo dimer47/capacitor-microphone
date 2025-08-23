@@ -48,6 +48,18 @@
           <ion-icon name="stop" slot="start"></ion-icon>
           Stop Recording
         </ion-button>
+        <ion-button expand="block" color="warning" (click)="pauseRecording()" class="action-button" [disabled]="!isRecording || isPaused">
+          <ion-icon name="pause" slot="start"></ion-icon>
+          Pause
+        </ion-button>
+        <ion-button expand="block" color="success" (click)="resumeRecording()" class="action-button" [disabled]="!isPaused">
+          <ion-icon name="play" slot="start"></ion-icon>
+          Resume Recording
+        </ion-button>
+        <ion-button expand="block" color="medium" (click)="getCurrentStatus()" class="action-button">
+          <ion-icon name="help-circle" slot="start"></ion-icon>
+          Get Current Status
+        </ion-button>
       </div>
     </ion-item-group>
 
@@ -129,22 +141,6 @@
                 <ion-button fill="clear" size="small" (click)="copyToClipboard(record.webPath, 'Web Path')">
                   <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
                 </ion-button>
-              </div>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="stacked">Data URL</ion-label>
-              <div class="copy-field data-url-field">
-                <ion-textarea readonly [value]="record.dataUrl" rows="2" class="data-url-textarea"></ion-textarea>
-                <div class="data-url-actions">
-                  <ion-button fill="clear" size="small" (click)="copyToClipboard(record.dataUrl, 'Data URL')">
-                    <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
-                  </ion-button>
-                  <ion-button fill="clear" color="success" size="small" [href]="dataUrlVerificationSite" target="_blank" rel="noopener">
-                    <ion-icon name="open-outline"></ion-icon>
-                    <ion-label>Verify</ion-label>
-                  </ion-button>
-                </div>
               </div>
             </ion-item>
           </ion-list>

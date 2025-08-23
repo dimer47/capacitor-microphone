@@ -6,7 +6,6 @@ interface RecordingDetails {
   index: number;
   recording: AudioRecording;
   webPath: string;
-  dataUrl: string;
   duration: string;
   format: string;
   mimeType: string;
@@ -31,9 +30,12 @@ export class HomeComponent implements OnInit {
 
   // Timer properties
   isRecording = false;
+  isPaused = false;
   recordingTime = '00:00';
   timerInterval: any;
   recordingStartTime: number = 0;
+  totalPausedDuration: number = 0;
+  pauseStartTime: number | null = null;
 
   // Data URL verification site
   dataUrlVerificationSite = 'https://base64.guru/converter/decode/audio';
@@ -73,7 +75,10 @@ export class HomeComponent implements OnInit {
 
       // Start the timer
       this.isRecording = true;
+      this.isPaused = false;
       this.recordingStartTime = Date.now();
+      this.totalPausedDuration = 0;
+      this.pauseStartTime = null;
       this.startTimer();
       this.showToast('Recording started', 'tertiary');
     } catch (error) {
@@ -86,12 +91,15 @@ export class HomeComponent implements OnInit {
     try {
       // Stop the timer first
       this.isRecording = false;
+      this.isPaused = false;
       const recordedTime = this.recordingTime;
       this.stopTimer();
+      // Reset pause tracking
+      this.pauseStartTime = null;
+      this.totalPausedDuration = 0;
 
       this.recording = await Microphone.stopRecording();
       console.log('recording: ' + JSON.stringify(this.recording));
-      console.log('recording.dataUrl: ' + JSON.stringify(this.recording.dataUrl));
       console.log('recording.duration: ' + JSON.stringify(this.recording.duration));
       console.log('recording.format: ' + JSON.stringify(this.recording.format));
       console.log('recording.mimeType: ' + JSON.stringify(this.recording.mimeType));
@@ -108,7 +116,6 @@ export class HomeComponent implements OnInit {
         index: this.recordingDetails.length + 1,
         recording: this.recording,
         webPath: this.recording.webPath || '',
-        dataUrl: this.recording.dataUrl || '',
         duration: this.recording.duration ? this.recording.duration.toString() : '0',
         format: this.recording.format || '',
         mimeType: this.recording.mimeType || '',
@@ -128,8 +135,10 @@ export class HomeComponent implements OnInit {
   startTimer() {
     this.stopTimer(); // Clear any existing timer
     this.timerInterval = setInterval(() => {
-      const elapsedTime = Date.now() - this.recordingStartTime;
-      this.recordingTime = this.formatTime(elapsedTime);
+      if (!this.isPaused) {
+        const elapsedTime = Date.now() - this.recordingStartTime - this.totalPausedDuration;
+        this.recordingTime = this.formatTime(Math.max(0, elapsedTime));
+      }
     }, 1000);
   }
 
@@ -160,6 +169,54 @@ export class HomeComponent implements OnInit {
   // Open data URL verification site
   openVerificationSite() {
     window.open(this.dataUrlVerificationSite, '_blank');
+  }
+
+  // Pause recording
+  async pauseRecording() {
+    try {
+      const result = await (Microphone as any).pauseRecording?.();
+      console.log('pauseRecordingResult: ' + JSON.stringify(result));
+      if (!this.isPaused) {
+        this.isPaused = true;
+        this.pauseStartTime = Date.now();
+      }
+      this.showToast('Recording paused', 'warning');
+    } catch (error) {
+      console.error('pauseRecording Error: ' + JSON.stringify(error));
+      this.showToast(`Error pausing recording: ${this.getErrorMessage(error)}`, 'danger');
+    }
+  }
+
+  // Resume recording
+  async resumeRecording() {
+    try {
+      const result = await (Microphone as any).resumeRecording?.();
+      console.log('resumeRecordingResult: ' + JSON.stringify(result));
+      if (this.isPaused) {
+        const now = Date.now();
+        if (this.pauseStartTime) {
+          this.totalPausedDuration += now - this.pauseStartTime;
+        }
+        this.pauseStartTime = null;
+        this.isPaused = false;
+      }
+      this.showToast('Recording resumed', 'medium');
+    } catch (error) {
+      console.error('resumeRecording Error: ' + JSON.stringify(error));
+      this.showToast(`Error resuming recording: ${this.getErrorMessage(error)}`, 'danger');
+    }
+  }
+
+  // Get current status
+  async getCurrentStatus() {
+    try {
+      const status = await (Microphone as any).getCurrentStatus?.();
+      console.log('getCurrentStatus: ' + JSON.stringify(status));
+      this.showToast(`Status: ${JSON.stringify(status)}`, 'primary');
+    } catch (error) {
+      console.error('getCurrentStatus Error: ' + JSON.stringify(error));
+      this.showToast(`Error getting status: ${this.getErrorMessage(error)}`, 'danger');
+    }
   }
 
   // Show toast message
