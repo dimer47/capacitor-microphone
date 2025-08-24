@@ -40,7 +40,7 @@ export interface MicrophonePlugin {
    * Gets current recording status
    * @returns {Promise<{ status: string }>} Object with status message
    * @since 0.0.3
-  */
+   */
   getCurrentStatus(): Promise<{ status: string }>;
 
   /**
@@ -50,10 +50,7 @@ export interface MicrophonePlugin {
    * @returns {Promise<PluginListenerHandle>} PluginListenerHandle
    * @since 0.0.4
    */
-  addListener(
-    eventName: 'status',
-    listenerFunc: (status: { status: string }) => void,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'status', listenerFunc: (status: { status: string }) => void): Promise<PluginListenerHandle>;
 
   /**
    * Removes a specific listener from microphone status updates
@@ -61,10 +58,7 @@ export interface MicrophonePlugin {
    * @param listenerFunc function to be removed
    * @since 0.0.4
    */
-  removeStatusListener(
-    eventName: 'status',
-    listenerFunc: (status: { status: string }) => void,
-  ): Promise<void>;
+  removeStatusListener(eventName: 'status', listenerFunc: (status: { status: string }) => void): Promise<void>;
 
   /**
    * Removes all listeners from microphone status updates

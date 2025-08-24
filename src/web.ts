@@ -11,10 +11,7 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
     this.notifyListeners('status', { status });
   }
 
-  async removeStatusListener(
-    eventName: 'status',
-    listenerFunc: (status: { status: string }) => void,
-  ): Promise<void> {
+  async removeStatusListener(eventName: 'status', listenerFunc: (status: { status: string }) => void): Promise<void> {
     await (this as any).removeListener(eventName, listenerFunc);
   }
 

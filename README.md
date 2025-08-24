@@ -4,7 +4,8 @@
 
 This Microphone API provides the ability to interact with the microphone and record Audio
 
-[![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg)](https://github.com/mozartec/capacitor-microphone/graphs/commit-activity) [![License](https://img.shields.io/npm/l/@mozartec/capacitor-microphone.svg)](/LICENSE) 
+[![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg)](https://github.com/mozartec/capacitor-microphone/graphs/commit-activity) [![License](https://img.shields.io/npm/l/@mozartec/capacitor-microphone.svg)](/LICENSE)
+
   <br>
 [![Dependency Status](https://david-dm.org/mozartec/capacitor-microphone.svg)](https://david-dm.org/mozartec/capacitor-microphone) [![devDependency Status](https://david-dm.org/mozartec/capacitor-microphone/dev-status.svg)](https://david-dm.org/mozartec/capacitor-microphone?type=dev)
   <br>
@@ -18,7 +19,6 @@ This Microphone API provides the ability to interact with the microphone and rec
 | Encoding     | kAudioFormatMPEG4AAC (audio/aac) | MPEG_4 / AAC (audio/aac)       | audio/webm or audio/mp4 or audio/ogg or audio/wav               |
 | Extension    | .m4a                 | .m4a               | .webm or .mp4 or .ogg or .wav               |
 
-
 ## Installation
 
 ## Install
@@ -29,6 +29,7 @@ npx cap sync
 ```
 
 ## Demo
+
 - **[🌐 Live Demo](https://mozartec.github.io/capacitor-microphone/)** - Try the plugin in your browser
 - [📁 Demo source code](_demo/)
 
@@ -52,7 +53,6 @@ The RECORD_AUDIO permission is for recording audio.
 
 Read about [Setting Permissions](https://capacitorjs.com/docs/android/configuration#setting-permissions) in the [Android Guide](https://capacitorjs.com/docs/android) for more information on setting Android permissions.
 
-
 ## API
 
 <docgen-index>
@@ -63,6 +63,9 @@ Read about [Setting Permissions](https://capacitorjs.com/docs/android/configurat
 * [`pauseRecording()`](#pauserecording)
 * [`resumeRecording()`](#resumerecording)
 * [`getCurrentStatus()`](#getcurrentstatus)
+* [`addListener('status', ...)`](#addlistenerstatus-)
+* [`removeStatusListener(...)`](#removestatuslistener)
+* [`removeAllListeners()`](#removealllisteners)
 * [`stopRecording()`](#stoprecording)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -162,6 +165,57 @@ Gets current recording status
 --------------------
 
 
+### addListener('status', ...)
+
+```typescript
+addListener(eventName: 'status', listenerFunc: (status: { status: string; }) => void) => Promise<PluginListenerHandle>
+```
+
+Adds a listener to microphone status updates
+
+| Param              | Type                                                  | Description                      |
+| ------------------ | ----------------------------------------------------- | -------------------------------- |
+| **`eventName`**    | <code>'status'</code>                                 | status                           |
+| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | function to be executed on event |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 0.0.4
+
+--------------------
+
+
+### removeStatusListener(...)
+
+```typescript
+removeStatusListener(eventName: 'status', listenerFunc: (status: { status: string; }) => void) => Promise<void>
+```
+
+Removes a specific listener from microphone status updates
+
+| Param              | Type                                                  | Description            |
+| ------------------ | ----------------------------------------------------- | ---------------------- |
+| **`eventName`**    | <code>'status'</code>                                 | status                 |
+| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | function to be removed |
+
+**Since:** 0.0.4
+
+--------------------
+
+
+### removeAllListeners()
+
+```typescript
+removeAllListeners() => Promise<void>
+```
+
+Removes all listeners from microphone status updates
+
+**Since:** 0.0.4
+
+--------------------
+
+
 ### stopRecording()
 
 ```typescript
@@ -185,6 +239,13 @@ Stops recoding session if one is in progress
 | Prop             | Type                                                                            |
 | ---------------- | ------------------------------------------------------------------------------- |
 | **`microphone`** | <code><a href="#microphonepermissionstate">MicrophonePermissionState</a></code> |
+
+
+#### PluginListenerHandle
+
+| Prop         | Type                                      |
+| ------------ | ----------------------------------------- |
+| **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
 
 
 #### AudioRecording
