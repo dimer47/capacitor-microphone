@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'AngularMicrophone',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: 'https',
+  },
 };
 
 export default config;

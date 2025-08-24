@@ -1,15 +1,9 @@
 {
-	"appId": "com.mozartec.capacitor.microphone.angular",
-	"appName": "AngularMicrophone",
-	"webDir": "www",
-	"server": {
-		"androidScheme": "https"
-	},
-	"packageClassList": [
-		"AppPlugin",
-		"HapticsPlugin",
-		"KeyboardPlugin",
-		"StatusBarPlugin",
-		"MicrophonePlugin"
-	]
+  "appId": "com.mozartec.capacitor.microphone.angular",
+  "appName": "AngularMicrophone",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "packageClassList": ["AppPlugin", "HapticsPlugin", "KeyboardPlugin", "StatusBarPlugin", "MicrophonePlugin"]
 }

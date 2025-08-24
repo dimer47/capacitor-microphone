@@ -83,8 +83,10 @@ public class MicrophonePlugin extends Plugin {
         try {
             implementation = new Microphone(getContext());
             implementation.startRecording();
+            String status = StatusMessageTypes.RecordingStared.getValue();
+            emitStatus(status);
             JSObject success = new JSObject();
-            success.put("status", StatusMessageTypes.RecordingStared.getValue());
+            success.put("status", status);
             call.resolve(success);
         } catch (Exception exp) {
             call.reject(StatusMessageTypes.CannotRecordOnThisPhone.getValue());
@@ -100,8 +102,10 @@ public class MicrophonePlugin extends Plugin {
 
         try {
             implementation.pauseRecording();
+            String status = StatusMessageTypes.RecordingPaused.getValue();
+            emitStatus(status);
             JSObject success = new JSObject();
-            success.put("status", StatusMessageTypes.RecordingPaused.getValue());
+            success.put("status", status);
             call.resolve(success);
         } catch (Exception exp) {
             call.reject(StatusMessageTypes.RecordingFailed.getValue());
@@ -117,8 +121,10 @@ public class MicrophonePlugin extends Plugin {
 
         try {
             implementation.resumeRecording();
+            String status = StatusMessageTypes.RecordingResumed.getValue();
+            emitStatus(status);
             JSObject success = new JSObject();
-            success.put("status", StatusMessageTypes.RecordingResumed.getValue());
+            success.put("status", status);
             call.resolve(success);
         } catch (Exception exp) {
             call.reject(StatusMessageTypes.RecordingFailed.getValue());
@@ -128,12 +134,21 @@ public class MicrophonePlugin extends Plugin {
     @PluginMethod
     public void getCurrentStatus(PluginCall call) {
         JSObject result = new JSObject();
+        String status;
         if (implementation == null) {
-            result.put("status", StatusMessageTypes.NoRecordingInProgress.getValue());
+            status = StatusMessageTypes.NoRecordingInProgress.getValue();
         } else {
-            result.put("status", implementation.getCurrentStatus());
+            status = implementation.getCurrentStatus();
         }
+        result.put("status", status);
+        emitStatus(status);
         call.resolve(result);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
+    public void removeStatusListener(PluginCall call) {
+        removeListener(call);
+        call.resolve();
     }
 
     @PluginMethod
@@ -153,8 +168,12 @@ public class MicrophonePlugin extends Plugin {
             Log.e("duration", duration + "");
             Log.e("newUri", newUri.toString());
             Recording recording = new Recording(newUri.toString(), webURL, duration, ".m4a", "audio/aac");
-            if (duration < 0) call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
-            else call.resolve(recording.toJSObject());
+            if (duration < 0) {
+                call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
+            } else {
+                emitStatus(StatusMessageTypes.NoRecordingInProgress.getValue());
+                call.resolve(recording.toJSObject());
+            }
         } catch (Exception exp) {
             call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
         } finally {
@@ -175,5 +194,11 @@ public class MicrophonePlugin extends Plugin {
         } catch (Exception ignore) {
             return -1;
         }
+    }
+
+    private void emitStatus(String status) {
+        JSObject ret = new JSObject();
+        ret.put("status", status);
+        notifyListeners("status", ret);
     }
 }

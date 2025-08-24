@@ -20,7 +20,6 @@ interface RecordingDetails {
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-
   recording!: AudioRecording;
   webPaths = [];
   dataUrls = [];
@@ -40,11 +39,9 @@ export class HomeComponent implements OnInit {
   // Data URL verification site
   dataUrlVerificationSite = 'https://base64.guru/converter/decode/audio';
 
-  constructor(
-    private toastController: ToastController
-  ) { }
+  constructor(private toastController: ToastController) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   async checkPermissions() {
     try {
@@ -121,7 +118,7 @@ export class HomeComponent implements OnInit {
         mimeType: this.recording.mimeType || '',
         path: this.recording.path || '',
         recordingTime: recordedTime,
-        expanded: false // Initialize as collapsed
+        expanded: false, // Initialize as collapsed
       });
 
       this.showToast(`Recording stopped. Duration: ${recordedTime}`, 'success');
@@ -229,9 +226,9 @@ export class HomeComponent implements OnInit {
       buttons: [
         {
           icon: 'close',
-          role: 'cancel'
-        }
-      ]
+          role: 'cancel',
+        },
+      ],
     });
     await toast.present();
   }

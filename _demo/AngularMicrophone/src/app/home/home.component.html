@@ -1,13 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>
-      Capacitor Microphone Tester
-    </ion-title>
+    <ion-title> Capacitor Microphone Tester </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="recording-status" [ngClass]="{'active': isRecording}">
+  <div class="recording-status" [ngClass]="{ active: isRecording }">
     <ion-icon [name]="isRecording ? 'radio' : 'radio-outline'" class="status-icon"></ion-icon>
     <div class="recording-indicator">
       <div class="recording-text">{{ isRecording ? 'Recording' : 'Ready' }}</div>
@@ -17,10 +15,10 @@
 
   <div class="verification-site-banner">
     <ion-label>Data URL Verification:</ion-label>
-    <a href="{{dataUrlVerificationSite}}" target="_blank" rel="noopener">
+    <a href="{{ dataUrlVerificationSite }}" target="_blank" rel="noopener">
       <ion-chip color="success" outline>
         <ion-icon name="open-outline"></ion-icon>
-        <ion-label>{{dataUrlVerificationSite}}</ion-label>
+        <ion-label>{{ dataUrlVerificationSite }}</ion-label>
       </ion-chip>
     </a>
   </div>
@@ -48,11 +46,23 @@
           <ion-icon name="stop" slot="start"></ion-icon>
           Stop Recording
         </ion-button>
-        <ion-button expand="block" color="warning" (click)="pauseRecording()" class="action-button" [disabled]="!isRecording || isPaused">
+        <ion-button
+          expand="block"
+          color="warning"
+          (click)="pauseRecording()"
+          class="action-button"
+          [disabled]="!isRecording || isPaused"
+        >
           <ion-icon name="pause" slot="start"></ion-icon>
           Pause
         </ion-button>
-        <ion-button expand="block" color="success" (click)="resumeRecording()" class="action-button" [disabled]="!isPaused">
+        <ion-button
+          expand="block"
+          color="success"
+          (click)="resumeRecording()"
+          class="action-button"
+          [disabled]="!isPaused"
+        >
           <ion-icon name="play" slot="start"></ion-icon>
           Resume Recording
         </ion-button>
@@ -73,9 +83,9 @@
         <ion-card-header (click)="toggleRecordingDetails(record)" class="clickable-header">
           <ion-card-subtitle>
             <div class="recording-header">
-              <span>Recording #{{record.index}}</span>
+              <span>Recording #{{ record.index }}</span>
               <div class="header-controls">
-                <ion-badge color="medium" class="recording-timer-badge">{{record.recordingTime}}</ion-badge>
+                <ion-badge color="medium" class="recording-timer-badge">{{ record.recordingTime }}</ion-badge>
                 <ion-icon [name]="record.expanded ? 'chevron-up' : 'chevron-down'" class="collapse-icon"></ion-icon>
               </div>
             </div>
@@ -87,7 +97,7 @@
           <div class="audio-container">
             <ion-label>Audio Player</ion-label>
             <audio controls class="audio-player">
-              <source [src]="record.webPath" [type]="record.mimeType">
+              <source [src]="record.webPath" [type]="record.mimeType" />
               Your browser does not support the audio element.
             </audio>
           </div>

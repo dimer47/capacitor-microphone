@@ -67,7 +67,9 @@ public class MicrophonePlugin: CAPPlugin {
         if successfullyStartedRecording == false {
             call.reject(StatusMessageTypes.cannotRecordOnThisPhone.rawValue)
         } else {
-            call.resolve(["status": StatusMessageTypes.recordingStared.rawValue])
+            let status = StatusMessageTypes.recordingStared
+            emitStatus(status)
+            call.resolve(["status": status.rawValue])
         }
     }
 
@@ -78,7 +80,9 @@ public class MicrophonePlugin: CAPPlugin {
         }
 
         implementation?.pauseRecording()
-        call.resolve(["status": StatusMessageTypes.recordingPaused.rawValue])
+        let status = StatusMessageTypes.recordingPaused
+        emitStatus(status)
+        call.resolve(["status": status.rawValue])
     }
 
     @objc func resumeRecording(_ call: CAPPluginCall) {
@@ -88,15 +92,25 @@ public class MicrophonePlugin: CAPPlugin {
         }
 
         implementation?.resumeRecording()
-        call.resolve(["status": StatusMessageTypes.recordingResumed.rawValue])
+        let status = StatusMessageTypes.recordingResumed
+        emitStatus(status)
+        call.resolve(["status": status.rawValue])
     }
 
     @objc func getCurrentStatus(_ call: CAPPluginCall) {
+        let status: StatusMessageTypes
         if let impl = implementation {
-            call.resolve(["status": impl.getCurrentStatus()])
+            status = StatusMessageTypes(rawValue: impl.getCurrentStatus()) ?? .noRecordingInProgress
         } else {
-            call.resolve(["status": StatusMessageTypes.noRecordingInProgress.rawValue])
+            status = .noRecordingInProgress
         }
+        emitStatus(status)
+        call.resolve(["status": status.rawValue])
+    }
+
+    @objc func removeStatusListener(_ call: CAPPluginCall) {
+        removeListener(call)
+        call.resolve()
     }
 
     @objc func stopRecording(_ call: CAPPluginCall) {
@@ -127,6 +141,7 @@ public class MicrophonePlugin: CAPPlugin {
         if audioRecording.duration < 0 {
             call.reject(StatusMessageTypes.failedToFetchRecording.rawValue)
         } else {
+            emitStatus(.noRecordingInProgress)
             call.resolve(audioRecording.toDictionary())
         }
     }
@@ -140,5 +155,9 @@ public class MicrophonePlugin: CAPPlugin {
             return -1
         }
         return Int(CMTimeGetSeconds(AVURLAsset(url: filePath!).duration) * 1000)
+    }
+
+    private func emitStatus(_ status: StatusMessageTypes) {
+        notifyListeners("status", data: ["status": status.rawValue])
     }
 }
