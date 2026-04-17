@@ -1,57 +1,88 @@
 <div align="center">
-  <h1>Mozartec Capacitor Microphone</h1>
-  <h2>@mozartec/capacitor-microphone</h2>
+  <h1>@dimer47/capacitor-microphone</h1>
 
-This Microphone API provides the ability to interact with the microphone and record Audio
+A Capacitor plugin for microphone audio recording with **pause/resume** support, **real-time status events**, and cross-platform compatibility.
 
-[![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg)](https://github.com/mozartec/capacitor-microphone/graphs/commit-activity) [![License](https://img.shields.io/npm/l/@mozartec/capacitor-microphone.svg)](/LICENSE)
+[![npm version](https://badge.fury.io/js/%40dimer47%2Fcapacitor-microphone.svg)](https://www.npmjs.com/package/@dimer47/capacitor-microphone)
+[![License](https://img.shields.io/npm/l/@dimer47/capacitor-microphone.svg)](/LICENSE)
 
-  <br>
-[![Dependency Status](https://david-dm.org/mozartec/capacitor-microphone.svg)](https://david-dm.org/mozartec/capacitor-microphone) [![devDependency Status](https://david-dm.org/mozartec/capacitor-microphone/dev-status.svg)](https://david-dm.org/mozartec/capacitor-microphone?type=dev)
-  <br>
-[![npm version](https://badge.fury.io/js/%40mozartec%2Fcapacitor-microphone.svg)](https://www.npmjs.com/package/@mozartec/capacitor-microphone) [![NPM Downloads](https://img.shields.io/npm/dw/@mozartec/capacitor-microphone)](https://www.npmjs.com/package/@mozartec/capacitor-microphone)
 </div>
-  
-## Platform support
-|              | iOS                  | Android            | Web (Preview)                |
-| ------------ |--------------------- | ------------------ | ------------------ |
-| Availability | :heavy_check_mark:   | :heavy_check_mark: | :heavy_check_mark: |
-| Encoding     | kAudioFormatMPEG4AAC (audio/aac) | MPEG_4 / AAC (audio/aac)       | audio/webm or audio/mp4 or audio/ogg or audio/wav               |
-| Extension    | .m4a                 | .m4a               | .webm or .mp4 or .ogg or .wav               |
+
+> **[Lire en Fran&ccedil;ais](README_FR.md)**
+
+## About
+
+This plugin is a fork of [`@mozartec/capacitor-microphone`](https://github.com/mozartec/capacitor-microphone) originally created by [Mozart](https://github.com/mozartec). We are grateful for the solid foundation provided by the original project.
+
+This fork was created to add **advanced recording control** needed for long-form audio recording use cases (meetings, interviews, lectures, etc.):
+
+- **Pause & Resume** — Full control over the recording flow without losing data
+- **Status Tracking** — Query the current recording state at any time
+- **Native Events** — Real-time status change notifications via event listeners
+- Full cross-platform support: **iOS**, **Android**, and **Web**
+
+## Platform Support
+
+|              | iOS                  | Android              | Web                  |
+| ------------ | -------------------- | -------------------- | -------------------- |
+| Availability | :heavy_check_mark:   | :heavy_check_mark:   | :heavy_check_mark:   |
+| Encoding     | kAudioFormatMPEG4AAC (audio/aac) | MPEG_4 / AAC (audio/aac) | audio/webm or audio/mp4 or audio/ogg or audio/wav |
+| Extension    | .m4a                 | .m4a                 | .webm or .mp4 or .ogg or .wav |
 
 ## Installation
 
-## Install
-
 ```bash
-npm install @mozartec/capacitor-microphone
+npm install @dimer47/capacitor-microphone
 npx cap sync
 ```
 
-## Demo
+## iOS Setup
 
-- **[🌐 Live Demo](https://mozartec.github.io/capacitor-microphone/)** - Try the plugin in your browser
-- [📁 Demo source code](_demo/)
-
-## iOS
-
-iOS requires the following usage description to be added and filled out for your app in `Info.plist`:
+Add the following usage description to your app's `Info.plist`:
 
 - `NSMicrophoneUsageDescription` (`Privacy - Microphone Usage Description`)
 
-Read about [Configuring `Info.plist`](https://capacitorjs.com/docs/ios/configuration#configuring-infoplist) in the [iOS Guide](https://capacitorjs.com/docs/ios) for more information on setting iOS permissions in Xcode.
+Read about [Configuring `Info.plist`](https://capacitorjs.com/docs/ios/configuration#configuring-infoplist) in the [iOS Guide](https://capacitorjs.com/docs/ios) for more information.
 
-## Android
+## Android Setup
 
-This API requires the following permission to be added to your `AndroidManifest.xml`:
+Add the following permission to your `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
 
-The RECORD_AUDIO permission is for recording audio.
+> **Note:** Pause/Resume requires Android API 24+ (Android 7.0 Nougat).
 
-Read about [Setting Permissions](https://capacitorjs.com/docs/android/configuration#setting-permissions) in the [Android Guide](https://capacitorjs.com/docs/android) for more information on setting Android permissions.
+Read about [Setting Permissions](https://capacitorjs.com/docs/android/configuration#setting-permissions) in the [Android Guide](https://capacitorjs.com/docs/android) for more information.
+
+## Usage
+
+```typescript
+import { Microphone } from '@dimer47/capacitor-microphone';
+
+// Request permissions
+const { microphone } = await Microphone.requestPermissions();
+
+// Start recording
+await Microphone.startRecording();
+
+// Pause / Resume
+await Microphone.pauseRecording();
+await Microphone.resumeRecording();
+
+// Check status
+const { status } = await Microphone.getCurrentStatus();
+
+// Listen to status changes
+await Microphone.addListener('status', ({ status }) => {
+  console.log('Recording status:', status);
+});
+
+// Stop and get the audio file
+const recording = await Microphone.stopRecording();
+console.log(recording.path, recording.duration, recording.mimeType);
+```
 
 ## API
 
@@ -81,14 +112,11 @@ Read about [Setting Permissions](https://capacitorjs.com/docs/android/configurat
 checkPermissions() => Promise<PermissionStatus>
 ```
 
-Checks microphone permission
+Checks microphone permission.
 
 **Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
-
 
 ### requestPermissions()
 
@@ -96,14 +124,11 @@ Checks microphone permission
 requestPermissions() => Promise<PermissionStatus>
 ```
 
-Requests microphone permission
+Requests microphone permission.
 
 **Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
-
 
 ### startRecording()
 
@@ -111,14 +136,11 @@ Requests microphone permission
 startRecording() => Promise<{ status: string; }>
 ```
 
-Starts recoding session if no session is in progress
+Starts a recording session if no session is in progress.
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
-
 
 ### pauseRecording()
 
@@ -126,14 +148,11 @@ Starts recoding session if no session is in progress
 pauseRecording() => Promise<{ status: string; }>
 ```
 
-Pauses recoding session if one is in progress
+Pauses the current recording session.
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
-
 
 ### resumeRecording()
 
@@ -141,14 +160,11 @@ Pauses recoding session if one is in progress
 resumeRecording() => Promise<{ status: string; }>
 ```
 
-Resumes recoding session if one is paused
+Resumes a paused recording session.
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
-
 
 ### getCurrentStatus()
 
@@ -156,14 +172,11 @@ Resumes recoding session if one is paused
 getCurrentStatus() => Promise<{ status: string; }>
 ```
 
-Gets current recording status
+Gets the current recording status without modifying state.
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
-
 
 ### addListener('status', ...)
 
@@ -171,19 +184,16 @@ Gets current recording status
 addListener(eventName: 'status', listenerFunc: (status: { status: string; }) => void) => Promise<PluginListenerHandle>
 ```
 
-Adds a listener to microphone status updates
+Adds a listener for real-time microphone status updates.
 
 | Param              | Type                                                  | Description                      |
 | ------------------ | ----------------------------------------------------- | -------------------------------- |
-| **`eventName`**    | <code>'status'</code>                                 | status                           |
-| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | function to be executed on event |
+| **`eventName`**    | <code>'status'</code>                                 | The event name                   |
+| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | Callback function                |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
-**Since:** 0.0.4
-
 --------------------
-
 
 ### removeStatusListener(...)
 
@@ -191,17 +201,14 @@ Adds a listener to microphone status updates
 removeStatusListener(eventName: 'status', listenerFunc: (status: { status: string; }) => void) => Promise<void>
 ```
 
-Removes a specific listener from microphone status updates
+Removes a specific status listener.
 
-| Param              | Type                                                  | Description            |
-| ------------------ | ----------------------------------------------------- | ---------------------- |
-| **`eventName`**    | <code>'status'</code>                                 | status                 |
-| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | function to be removed |
-
-**Since:** 0.0.4
+| Param              | Type                                                  |
+| ------------------ | ----------------------------------------------------- |
+| **`eventName`**    | <code>'status'</code>                                 |
+| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> |
 
 --------------------
-
 
 ### removeAllListeners()
 
@@ -209,12 +216,9 @@ Removes a specific listener from microphone status updates
 removeAllListeners() => Promise<void>
 ```
 
-Removes all listeners from microphone status updates
-
-**Since:** 0.0.4
+Removes all status listeners.
 
 --------------------
-
 
 ### stopRecording()
 
@@ -222,17 +226,13 @@ Removes all listeners from microphone status updates
 stopRecording() => Promise<AudioRecording>
 ```
 
-Stops recoding session if one is in progress
+Stops the recording session and returns the audio file.
 
 **Returns:** <code>Promise&lt;<a href="#audiorecording">AudioRecording</a>&gt;</code>
 
-**Since:** 0.0.3
-
 --------------------
 
-
 ### Interfaces
-
 
 #### PermissionStatus
 
@@ -240,32 +240,27 @@ Stops recoding session if one is in progress
 | ---------------- | ------------------------------------------------------------------------------- |
 | **`microphone`** | <code><a href="#microphonepermissionstate">MicrophonePermissionState</a></code> |
 
-
 #### PluginListenerHandle
 
 | Prop         | Type                                      |
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
 
-
 #### AudioRecording
 
-| Prop           | Type                | Description                                                                                                                                  | Since |
-| -------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| **`path`**     | <code>string</code> | Platform-specific file URL that can be read later using the Filesystem API.                                                                  | 0.0.3 |
-| **`webPath`**  | <code>string</code> | webPath returns a path that can be used to set the src attribute of an audio element and can be useful for testing.                          | 0.0.3 |
-| **`duration`** | <code>number</code> | recoding duration in milliseconds                                                                                                            | 0.0.3 |
-| **`format`**   | <code>string</code> | file extension: ".m4a" for (iOS and Android) and ".webm" \| ".mp4" \| ".ogg" \| ".wav" for Web based on compatibility                        | 0.0.3 |
-| **`mimeType`** | <code>string</code> | file encoding: "audio/aac" for (iOS and Android) and "audio/webm \| "audio/mp4" \| "audio/ogg" \| "audio/wav" for Web based on compatibility | 0.0.3 |
-
+| Prop           | Type                | Description                                                                                                           |
+| -------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **`path`**     | <code>string</code> | Platform-specific file URL that can be read later using the Filesystem API.                                            |
+| **`webPath`**  | <code>string</code> | Path that can be used to set the src attribute of an audio element.                                                    |
+| **`duration`** | <code>number</code> | Recording duration in milliseconds.                                                                                    |
+| **`format`**   | <code>string</code> | File extension: `.m4a` (iOS/Android) or `.webm` / `.mp4` / `.ogg` / `.wav` (Web).                                     |
+| **`mimeType`** | <code>string</code> | MIME type: `audio/aac` (iOS/Android) or `audio/webm` / `audio/mp4` / `audio/ogg` / `audio/wav` (Web).                 |
 
 ### Type Aliases
-
 
 #### MicrophonePermissionState
 
 <code><a href="#permissionstate">PermissionState</a> | 'limited'</code>
-
 
 #### PermissionState
 
@@ -273,12 +268,27 @@ Stops recoding session if one is in progress
 
 </docgen-api>
 
-## Contributors
+## Status Messages
 
-Thanks to all the people who have contributed to this project! 🙏
+The following status strings are returned by the API methods and emitted through status events:
 
-<a href="https://github.com/mozartec/capacitor-microphone/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=mozartec/capacitor-microphone" />
-</a>
+| Status                             | Description                                |
+| ---------------------------------- | ------------------------------------------ |
+| `recording stared`                 | Recording has started successfully         |
+| `recording in progress`            | A recording is currently in progress       |
+| `recording paused`                 | Recording has been paused                  |
+| `recording resumed`                | Recording has been resumed                 |
+| `no recording in progress`         | No active recording session                |
+| `microphone permission not granted`| Microphone permission was not granted      |
+| `cannot record on this phone`      | Device does not support audio recording    |
+| `recording failed`                 | An error occurred during recording         |
+| `failed to fetch recording`        | Could not retrieve the recorded audio file |
+| `microphone is busy`               | Microphone is already in use               |
 
-Made with [contrib.rocks](https://contrib.rocks)
+## Acknowledgments
+
+This project is a fork of [`@mozartec/capacitor-microphone`](https://github.com/mozartec/capacitor-microphone) by [Mozart](https://mozartec.com/). Thank you for creating and maintaining the original plugin that made this work possible.
+
+## License
+
+MIT - See [LICENSE](LICENSE) for details.

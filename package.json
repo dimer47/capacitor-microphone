@@ -1,7 +1,7 @@
 {
-  "name": "@mozartec/capacitor-microphone",
-  "version": "7.1.0",
-  "description": "This Microphone API provides the ability to interact with the microphone and record Audio",
+  "name": "@dimer47/capacitor-microphone",
+  "version": "8.0.0",
+  "description": "Capacitor plugin for microphone audio recording with pause/resume support, status events, and cross-platform compatibility (iOS, Android, Web). Fork of @mozartec/capacitor-microphone.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -13,14 +13,17 @@
     "ios/Plugin/",
     "MozartecCapacitorMicrophone.podspec"
   ],
-  "author": "Mozart <mozart.alkhateeb@gmail.com> (https://mozartec.com/)",
+  "author": "Dimitri Iachi <dimitri@id-synergy.tech> (https://github.com/dimer47)",
+  "contributors": [
+    "Mozart <mozart.alkhateeb@gmail.com> (https://mozartec.com/)"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mozartec/capacitor-microphone.git"
+    "url": "git+https://github.com/dimer47/capacitor-microphone.git"
   },
   "bugs": {
-    "url": "https://github.com/mozartec/capacitor-microphone/issues"
+    "url": "https://github.com/dimer47/capacitor-microphone/issues"
   },
   "keywords": [
     "capacitor",
