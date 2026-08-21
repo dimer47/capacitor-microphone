@@ -49,6 +49,13 @@ enum StatusMessageTypes: String {
     case recordingResumed = "recording resumed"
     case microphoneIsBusy = "microphone is busy"
     case recordingStared = "recording stared"
+
+    /// Correctly spelled alias of `recordingStared`.
+    ///
+    /// Swift forbids two cases sharing a raw value, so this is a static property
+    /// rather than a case. The emitted string stays `"recording stared"`: it is
+    /// part of the public contract and changing it would break existing callers.
+    static let recordingStarted = StatusMessageTypes.recordingStared
 }
 
 enum MicrophonePermissionType: String, CaseIterable {

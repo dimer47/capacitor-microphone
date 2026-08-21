@@ -67,7 +67,7 @@ public class MicrophonePlugin: CAPPlugin {
         if successfullyStartedRecording == false {
             call.reject(StatusMessageTypes.cannotRecordOnThisPhone.rawValue)
         } else {
-            let status = StatusMessageTypes.recordingStared
+            let status = StatusMessageTypes.recordingStarted
             emitStatus(status)
             call.resolve(["status": status.rawValue])
         }

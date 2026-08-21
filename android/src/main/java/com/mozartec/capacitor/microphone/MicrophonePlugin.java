@@ -82,7 +82,7 @@ public class MicrophonePlugin extends Plugin {
         try {
             implementation = new Microphone(getContext());
             implementation.startRecording();
-            String status = StatusMessageTypes.RecordingStared.getValue();
+            String status = StatusMessageTypes.RecordingStarted.getValue();
             emitStatus(status);
             JSObject success = new JSObject();
             success.put("status", status);

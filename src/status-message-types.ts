@@ -8,5 +8,15 @@ export enum StatusMessageTypes {
   RecordingPaused = 'recording paused',
   RecordingResumed = 'recording resumed',
   MicrophoneIsBusy = 'microphone is busy',
+  /**
+   * @deprecated Misspelled, kept for backward compatibility. Use {@link StatusMessageTypes.RecordingStarted}.
+   */
   RecordingStared = 'recording stared',
+  /**
+   * Correctly spelled alias of {@link StatusMessageTypes.RecordingStared}.
+   *
+   * Both members share the same `'recording stared'` value: the emitted string is
+   * part of the public contract and changing it would break callers comparing to it.
+   */
+  RecordingStarted = 'recording stared',
 }

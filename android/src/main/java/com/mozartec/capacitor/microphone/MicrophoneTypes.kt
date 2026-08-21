@@ -12,7 +12,20 @@ enum class StatusMessageTypes(val value: String) {
     RecordingPaused("recording paused"),
     RecordingResumed("recording resumed"),
     MicrophoneIsBusy("microphone is busy"),
-    RecordingStared("recording stared")
+    RecordingStared("recording stared");
+
+    companion object {
+        /**
+         * Correctly spelled alias of [RecordingStared].
+         *
+         * Declared here rather than as a second entry so that iterating over
+         * `values()` does not yield a duplicate. The emitted string stays
+         * "recording stared": it is part of the public contract and changing it
+         * would break existing callers.
+         */
+        @JvmField
+        val RecordingStarted = RecordingStared
+    }
 }
 
 class Recording(val path: String?, val webPath: String?, val duration: Int, val format: String?, val mimeType: String?) {

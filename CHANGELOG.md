@@ -20,6 +20,13 @@ This project is a fork of [@mozartec/capacitor-microphone](https://github.com/mo
 - **Android: released the `MediaPlayer`** used to read the recording duration, which
   was leaked on every `stopRecording()` call.
 
+### Added
+
+- `RecordingStarted`, a correctly spelled alias of the misspelled `RecordingStared`,
+  on all three platforms. Both resolve to the same `'recording stared'` string: the
+  emitted value is part of the public contract, so it is left untouched and existing
+  comparisons keep working. `RecordingStared` is now marked deprecated.
+
 ### Changed
 
 - Removed debug `Log.e` calls left in the Android release path.

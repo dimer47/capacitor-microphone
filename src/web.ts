@@ -80,7 +80,7 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
       this.recordingStartedAt = Date.now();
       this.pausedAt = 0;
       this.pausedDuration = 0;
-      const status = StatusMessageTypes.RecordingStared;
+      const status = StatusMessageTypes.RecordingStarted;
       this.emitStatus(status);
       return {
         status,
