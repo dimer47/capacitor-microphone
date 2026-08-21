@@ -3,7 +3,6 @@
 
 A Capacitor plugin for microphone audio recording with **pause/resume** support, **real-time status events**, and cross-platform compatibility.
 
-[![npm version](https://badge.fury.io/js/%40dimer47%2Fcapacitor-microphone.svg)](https://www.npmjs.com/package/@dimer47/capacitor-microphone)
 </div>
 
 > **[Lire en Fran&ccedil;ais](README_FR.md)**
@@ -110,11 +109,14 @@ console.log(recording.path, recording.duration, recording.mimeType);
 checkPermissions() => Promise<PermissionStatus>
 ```
 
-Checks microphone permission.
+Checks microphone permission
 
 **Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
+
 
 ### requestPermissions()
 
@@ -122,11 +124,14 @@ Checks microphone permission.
 requestPermissions() => Promise<PermissionStatus>
 ```
 
-Requests microphone permission.
+Requests microphone permission
 
 **Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
+
 
 ### startRecording()
 
@@ -134,11 +139,14 @@ Requests microphone permission.
 startRecording() => Promise<{ status: string; }>
 ```
 
-Starts a recording session if no session is in progress.
+Starts recoding session if no session is in progress
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
+
 
 ### pauseRecording()
 
@@ -146,11 +154,14 @@ Starts a recording session if no session is in progress.
 pauseRecording() => Promise<{ status: string; }>
 ```
 
-Pauses the current recording session.
+Pauses recoding session if one is in progress
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
+
 
 ### resumeRecording()
 
@@ -158,11 +169,14 @@ Pauses the current recording session.
 resumeRecording() => Promise<{ status: string; }>
 ```
 
-Resumes a paused recording session.
+Resumes recoding session if one is paused
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
+
 
 ### getCurrentStatus()
 
@@ -170,11 +184,14 @@ Resumes a paused recording session.
 getCurrentStatus() => Promise<{ status: string; }>
 ```
 
-Gets the current recording status without modifying state.
+Gets current recording status
 
 **Returns:** <code>Promise&lt;{ status: string; }&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
+
 
 ### addListener('status', ...)
 
@@ -182,16 +199,19 @@ Gets the current recording status without modifying state.
 addListener(eventName: 'status', listenerFunc: (status: { status: string; }) => void) => Promise<PluginListenerHandle>
 ```
 
-Adds a listener for real-time microphone status updates.
+Adds a listener to microphone status updates
 
 | Param              | Type                                                  | Description                      |
 | ------------------ | ----------------------------------------------------- | -------------------------------- |
-| **`eventName`**    | <code>'status'</code>                                 | The event name                   |
-| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | Callback function                |
+| **`eventName`**    | <code>'status'</code>                                 | status                           |
+| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | function to be executed on event |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
+**Since:** 0.0.4
+
 --------------------
+
 
 ### removeStatusListener(...)
 
@@ -199,14 +219,17 @@ Adds a listener for real-time microphone status updates.
 removeStatusListener(eventName: 'status', listenerFunc: (status: { status: string; }) => void) => Promise<void>
 ```
 
-Removes a specific status listener.
+Removes a specific listener from microphone status updates
 
-| Param              | Type                                                  |
-| ------------------ | ----------------------------------------------------- |
-| **`eventName`**    | <code>'status'</code>                                 |
-| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> |
+| Param              | Type                                                  | Description            |
+| ------------------ | ----------------------------------------------------- | ---------------------- |
+| **`eventName`**    | <code>'status'</code>                                 | status                 |
+| **`listenerFunc`** | <code>(status: { status: string; }) =&gt; void</code> | function to be removed |
+
+**Since:** 0.0.4
 
 --------------------
+
 
 ### removeAllListeners()
 
@@ -214,9 +237,12 @@ Removes a specific status listener.
 removeAllListeners() => Promise<void>
 ```
 
-Removes all status listeners.
+Removes all listeners from microphone status updates
+
+**Since:** 0.0.4
 
 --------------------
+
 
 ### stopRecording()
 
@@ -224,13 +250,17 @@ Removes all status listeners.
 stopRecording() => Promise<AudioRecording>
 ```
 
-Stops the recording session and returns the audio file.
+Stops recoding session if one is in progress
 
 **Returns:** <code>Promise&lt;<a href="#audiorecording">AudioRecording</a>&gt;</code>
 
+**Since:** 0.0.3
+
 --------------------
 
+
 ### Interfaces
+
 
 #### PermissionStatus
 
@@ -238,27 +268,32 @@ Stops the recording session and returns the audio file.
 | ---------------- | ------------------------------------------------------------------------------- |
 | **`microphone`** | <code><a href="#microphonepermissionstate">MicrophonePermissionState</a></code> |
 
+
 #### PluginListenerHandle
 
 | Prop         | Type                                      |
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
 
+
 #### AudioRecording
 
-| Prop           | Type                | Description                                                                                                           |
-| -------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **`path`**     | <code>string</code> | Platform-specific file URL that can be read later using the Filesystem API.                                            |
-| **`webPath`**  | <code>string</code> | Path that can be used to set the src attribute of an audio element.                                                    |
-| **`duration`** | <code>number</code> | Recording duration in milliseconds.                                                                                    |
-| **`format`**   | <code>string</code> | File extension: `.m4a` (iOS/Android) or `.webm` / `.mp4` / `.ogg` / `.wav` (Web).                                     |
-| **`mimeType`** | <code>string</code> | MIME type: `audio/aac` (iOS/Android) or `audio/webm` / `audio/mp4` / `audio/ogg` / `audio/wav` (Web).                 |
+| Prop           | Type                | Description                                                                                                                                  | Since |
+| -------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`path`**     | <code>string</code> | Platform-specific file URL that can be read later using the Filesystem API.                                                                  | 0.0.3 |
+| **`webPath`**  | <code>string</code> | webPath returns a path that can be used to set the src attribute of an audio element and can be useful for testing.                          | 0.0.3 |
+| **`duration`** | <code>number</code> | recoding duration in milliseconds                                                                                                            | 0.0.3 |
+| **`format`**   | <code>string</code> | file extension: ".m4a" for (iOS and Android) and ".webm" \| ".mp4" \| ".ogg" \| ".wav" for Web based on compatibility                        | 0.0.3 |
+| **`mimeType`** | <code>string</code> | file encoding: "audio/aac" for (iOS and Android) and "audio/webm \| "audio/mp4" \| "audio/ogg" \| "audio/wav" for Web based on compatibility | 0.0.3 |
+
 
 ### Type Aliases
+
 
 #### MicrophonePermissionState
 
 <code><a href="#permissionstate">PermissionState</a> | 'limited'</code>
+
 
 #### PermissionState
 
@@ -293,4 +328,4 @@ MIT - See [LICENSE](LICENSE) for details.
 
 ## 📊 Project status
 
-[![License](https://img.shields.io/npm/l/@dimer47/capacitor-microphone.svg)](/LICENSE)
+[![npm version](https://img.shields.io/npm/v/@dimer47/capacitor-microphone?color=red&style=flat-square)](https://www.npmjs.com/package/@dimer47/capacitor-microphone) [![License](https://img.shields.io/npm/l/@dimer47/capacitor-microphone.svg)](/LICENSE)
