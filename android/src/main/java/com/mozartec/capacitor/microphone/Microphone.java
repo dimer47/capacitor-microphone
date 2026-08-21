@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class Microphone {
 
+    public static final String PAUSE_RESUME_UNSUPPORTED = "pause and resume require Android 7.0 (API 24) or later";
+
     private Context context;
     private MediaRecorder mediaRecorder;
     private File outputFile;
@@ -34,17 +36,25 @@ public class Microphone {
     }
 
     public void pauseRecording() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mediaRecorder.pause();
-            currentStatus = StatusMessageTypes.RecordingPaused;
+        // MediaRecorder.pause() only exists from API 24 onwards. Below that the
+        // recording keeps running, so reporting a paused state would be a lie.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            throw new UnsupportedOperationException(PAUSE_RESUME_UNSUPPORTED);
         }
+        mediaRecorder.pause();
+        currentStatus = StatusMessageTypes.RecordingPaused;
     }
 
     public void resumeRecording() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mediaRecorder.resume();
-            currentStatus = StatusMessageTypes.RecordingInProgress;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            throw new UnsupportedOperationException(PAUSE_RESUME_UNSUPPORTED);
         }
+        mediaRecorder.resume();
+        currentStatus = StatusMessageTypes.RecordingInProgress;
+    }
+
+    public static boolean isPauseResumeSupported() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
     }
 
     public void stopRecording() {

@@ -6,6 +6,16 @@ import { StatusMessageTypes } from './status-message-types';
 export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
   private mediaRecorder: MediaRecorder | null = null;
   private audioChunks: Blob[] = [];
+  private recordingStartedAt = 0;
+  private pausedAt = 0;
+  private pausedDuration = 0;
+
+  private resetRecordingState() {
+    this.mediaRecorder = null;
+    this.recordingStartedAt = 0;
+    this.pausedAt = 0;
+    this.pausedDuration = 0;
+  }
 
   private emitStatus(status: string) {
     this.notifyListeners('status', { status });
@@ -67,6 +77,9 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
       };
 
       this.mediaRecorder.start();
+      this.recordingStartedAt = Date.now();
+      this.pausedAt = 0;
+      this.pausedDuration = 0;
       const status = StatusMessageTypes.RecordingStared;
       this.emitStatus(status);
       return {
@@ -83,6 +96,7 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
     }
     try {
       this.mediaRecorder.pause();
+      this.pausedAt = Date.now();
       const status = StatusMessageTypes.RecordingPaused;
       this.emitStatus(status);
       return { status };
@@ -97,6 +111,10 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
     }
     try {
       this.mediaRecorder.resume();
+      if (this.pausedAt > 0) {
+        this.pausedDuration += Date.now() - this.pausedAt;
+        this.pausedAt = 0;
+      }
       const status = StatusMessageTypes.RecordingResumed;
       this.emitStatus(status);
       return { status };
@@ -136,18 +154,13 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
           const audioUrl = URL.createObjectURL(audioBlob);
           this.mediaRecorder?.stream?.getTracks().forEach((track) => track.stop());
 
-          // Get duration if possible, or use a more accurate calculation
-          let duration = 0;
-          try {
-            // Better duration estimation - based on audio data size and bit rate
-            // This is still an approximation, but better than using sampleRate
-            duration = this.audioChunks.length > 0 ? this.audioChunks.reduce((acc, chunk) => acc + chunk.size, 0) : 0;
-          } catch (e) {
-            console.error('Could not determine audio duration', e);
-          }
+          // Elapsed recording time in milliseconds, paused time excluded, to match
+          // the duration reported by the iOS and Android implementations.
+          const pausedDuration = this.pausedDuration + (this.pausedAt > 0 ? Date.now() - this.pausedAt : 0);
+          const duration = this.recordingStartedAt > 0 ? Date.now() - this.recordingStartedAt - pausedDuration : 0;
 
           if (duration < 0) {
-            this.mediaRecorder = null;
+            this.resetRecordingState();
             reject(StatusMessageTypes.FailedToFetchRecording);
             return;
           }
@@ -170,11 +183,11 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
             mimeType,
           };
 
-          this.mediaRecorder = null;
+          this.resetRecordingState();
           this.emitStatus(StatusMessageTypes.NoRecordingInProgress);
           resolve(recording);
         } catch (error) {
-          this.mediaRecorder = null;
+          this.resetRecordingState();
           reject(StatusMessageTypes.FailedToFetchRecording);
         }
       };
@@ -182,7 +195,7 @@ export class MicrophoneWeb extends WebPlugin implements MicrophonePlugin {
       try {
         this.mediaRecorder.stop();
       } catch (error) {
-        this.mediaRecorder = null;
+        this.resetRecordingState();
         reject(StatusMessageTypes.FailedToFetchRecording);
       }
     });

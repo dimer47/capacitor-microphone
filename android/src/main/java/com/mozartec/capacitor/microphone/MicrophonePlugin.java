@@ -3,7 +3,6 @@ package com.mozartec.capacitor.microphone;
 import android.Manifest;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.util.Log;
 import com.getcapacitor.FileUtils;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -100,6 +99,11 @@ public class MicrophonePlugin extends Plugin {
             return;
         }
 
+        if (!Microphone.isPauseResumeSupported()) {
+            call.reject(Microphone.PAUSE_RESUME_UNSUPPORTED);
+            return;
+        }
+
         try {
             implementation.pauseRecording();
             String status = StatusMessageTypes.RecordingPaused.getValue();
@@ -116,6 +120,11 @@ public class MicrophonePlugin extends Plugin {
     public void resumeRecording(PluginCall call) {
         if (implementation == null) {
             call.reject(StatusMessageTypes.NoRecordingInProgress.getValue());
+            return;
+        }
+
+        if (!Microphone.isPauseResumeSupported()) {
+            call.reject(Microphone.PAUSE_RESUME_UNSUPPORTED);
             return;
         }
 
@@ -163,10 +172,7 @@ public class MicrophonePlugin extends Plugin {
             File audioFileUrl = implementation.getOutputFile();
             Uri newUri = Uri.fromFile(audioFileUrl);
             String webURL = FileUtils.getPortablePath(getContext(), bridge.getLocalUrl(), newUri);
-            Log.e("webURL", webURL);
             int duration = getAudioFileDuration(audioFileUrl.getAbsolutePath());
-            Log.e("duration", duration + "");
-            Log.e("newUri", newUri.toString());
             Recording recording = new Recording(newUri.toString(), webURL, duration, ".m4a", "audio/aac");
             if (duration < 0) {
                 call.reject(StatusMessageTypes.FailedToFetchRecording.getValue());
@@ -186,13 +192,15 @@ public class MicrophonePlugin extends Plugin {
     }
 
     private int getAudioFileDuration(String filePath) {
+        MediaPlayer mp = new MediaPlayer();
         try {
-            MediaPlayer mp = new MediaPlayer();
             mp.setDataSource(filePath);
             mp.prepare();
             return mp.getDuration();
         } catch (Exception ignore) {
             return -1;
+        } finally {
+            mp.release();
         }
     }
 
