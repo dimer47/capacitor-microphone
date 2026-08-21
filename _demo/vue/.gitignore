@@ -1,0 +1,6 @@
+node_modules
+dist
+
+# Native projects are generated on demand with `npm run add:ios` / `add:android`
+ios
+android

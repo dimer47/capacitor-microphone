@@ -1,0 +1,29 @@
+{
+  "name": "capacitor-microphone-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "build:pages": "DEMO_BASE=/capacitor-microphone/ npm run build",
+    "add:ios": "npm run build && npx cap add ios && npx cap sync ios",
+    "add:android": "npm run build && npx cap add android && npx cap sync android",
+    "sync": "npm run build && npx cap sync",
+    "open:ios": "npx cap open ios",
+    "open:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.0.0",
+    "@dimer47/capacitor-microphone": "file:../..",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.8",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.7",
+    "vue-tsc": "^2.2.0"
+  }
+}

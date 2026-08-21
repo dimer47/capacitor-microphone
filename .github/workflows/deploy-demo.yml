@@ -39,20 +39,20 @@ jobs:
         run: npm run build
 
       - name: Install demo dependencies
-        working-directory: _demo/AngularMicrophone
-        run: npm ci
+        working-directory: _demo/vue
+        run: npm install
 
-      - name: Build Angular demo for production
-        working-directory: _demo/AngularMicrophone
+      - name: Build demo for production
+        working-directory: _demo/vue
         run: |
-          npm run build -- --configuration production --base-href /capacitor-microphone/
-          # Create .nojekyll file to prevent Jekyll processing
-          touch www/.nojekyll
+          npm run build:pages
+          # Prevent GitHub Pages from running the output through Jekyll
+          touch dist/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _demo/AngularMicrophone/www
+          path: _demo/vue/dist
 
   deploy:
     environment:

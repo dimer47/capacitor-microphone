@@ -7,6 +7,8 @@ A Capacitor plugin for microphone audio recording with **pause/resume** support,
 
 > **[Lire en Fran&ccedil;ais](README_FR.md)**
 
+> **[Try the live demo](https://dimer47.github.io/capacitor-microphone/)** — records in the browser; the same API runs natively on iOS and Android.
+
 ## About
 
 This plugin is a fork of [`@mozartec/capacitor-microphone`](https://github.com/mozartec/capacitor-microphone) originally created by [Mozart](https://github.com/mozartec). We are grateful for the solid foundation provided by the original project.

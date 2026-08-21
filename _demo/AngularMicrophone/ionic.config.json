@@ -1,7 +1,0 @@
-{
-  "name": "AngularMicrophone",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}

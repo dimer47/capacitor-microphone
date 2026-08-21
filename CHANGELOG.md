@@ -29,6 +29,13 @@ This project is a fork of [@mozartec/capacitor-microphone](https://github.com/mo
 
 ### Changed
 
+- Replaced the Angular demo with a Vue 3 + Vite one under `_demo/vue`. The previous
+  app was pinned to Angular 16 and carried 57 advisories with no fix below Angular 20;
+  it also still imported the plugin under its former `@mozartec` name, so it never
+  exercised this fork's additions. The new demo depends on the local plugin, covers
+  every method including pause, resume, status polling and the native status events,
+  and installs 52 packages with no advisory. It runs on the web and, through
+  Capacitor, natively on iOS and Android.
 - Removed debug `Log.e` calls left in the Android release path.
 - `README_FR.md` is now part of the published package, so the French link in the
   README resolves on npm.

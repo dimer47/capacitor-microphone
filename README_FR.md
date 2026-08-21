@@ -8,6 +8,8 @@ Un plugin Capacitor pour l'enregistrement audio avec support du **pause/reprise*
 
 > **[Read in English](README.md)**
 
+> **[Essayer la d&eacute;mo en ligne](https://dimer47.github.io/capacitor-microphone/)** — enregistre dans le navigateur ; la m&ecirc;me API fonctionne en natif sur iOS et Android.
+
 ## A propos
 
 Ce plugin est un fork de [`@mozartec/capacitor-microphone`](https://github.com/mozartec/capacitor-microphone) initialement créé par [Mozart](https://github.com/mozartec). Nous remercions chaleureusement le développeur original pour les bases solides qu'il a posées.
