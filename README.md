@@ -4,8 +4,6 @@
 A Capacitor plugin for microphone audio recording with **pause/resume** support, **real-time status events**, and cross-platform compatibility.
 
 [![npm version](https://badge.fury.io/js/%40dimer47%2Fcapacitor-microphone.svg)](https://www.npmjs.com/package/@dimer47/capacitor-microphone)
-[![License](https://img.shields.io/npm/l/@dimer47/capacitor-microphone.svg)](/LICENSE)
-
 </div>
 
 > **[Lire en Fran&ccedil;ais](README_FR.md)**
@@ -292,3 +290,7 @@ This project is a fork of [`@mozartec/capacitor-microphone`](https://github.com/
 ## License
 
 MIT - See [LICENSE](LICENSE) for details.
+
+## 📊 Project status
+
+[![License](https://img.shields.io/npm/l/@dimer47/capacitor-microphone.svg)](/LICENSE)
